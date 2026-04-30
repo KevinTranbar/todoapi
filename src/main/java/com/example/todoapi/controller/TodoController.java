@@ -3,6 +3,7 @@ package com.example.todoapi.controller;
 import com.example.todoapi.dto.TodoRequest;
 import com.example.todoapi.dto.TodoResponse;
 import com.example.todoapi.service.TodoService;
+import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -30,13 +31,13 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoResponse> create(@RequestBody TodoRequest request) { //Take req body(JSON) and convert it into TodoRequest object (DTO)
+    public ResponseEntity<TodoResponse> create(@Valid @RequestBody TodoRequest request) { //Take req body(JSON) and convert it into TodoRequest object (DTO)
         TodoResponse created = todoService.createTodo(request); //Create Todo with converted req body
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @PutMapping("/{id}")
-    public TodoResponse update(@PathVariable Long id, @RequestBody TodoRequest request) {
+    public TodoResponse update(@PathVariable Long id, @Valid @RequestBody TodoRequest request) {
         return todoService.updateTodo(id, request);
     }
 
