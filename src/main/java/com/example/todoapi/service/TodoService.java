@@ -1,6 +1,7 @@
 package com.example.todoapi.service;
 
 import com.example.todoapi.dto.TodoRequest;
+import com.example.todoapi.exception.TodoNotFoundException;
 import com.example.todoapi.model.Todo;
 import com.example.todoapi.dto.TodoResponse;
 import com.example.todoapi.repository.TodoRepository;
@@ -35,7 +36,7 @@ public class TodoService {
 
     public TodoResponse getTodoById(Long id) {
         Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Todo not found with id: " + id));
+                .orElseThrow(() -> new TodoNotFoundException(id));
         return toResponse(todo);
     }
 
@@ -51,7 +52,7 @@ public class TodoService {
 
     public TodoResponse updateTodo(Long id, TodoRequest request) {
         Todo todo = todoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Todo not fount with id: " + id));
+                .orElseThrow(() -> new TodoNotFoundException(id));
         todo.setTitle(request.getTitle());
         todo.setDescription(request.getDescription());
         todo.setCompleted(request.isCompleted());
@@ -62,7 +63,7 @@ public class TodoService {
 
     public void deleteTodo(Long id) {
         if (!todoRepository.existsById(id)) {
-            throw new RuntimeException("Todo not found with id: " + id);
+            throw new TodoNotFoundException(id);
         }
         todoRepository.deleteById(id);
     }
