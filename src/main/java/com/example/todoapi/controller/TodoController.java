@@ -4,6 +4,8 @@ import com.example.todoapi.dto.TodoRequest;
 import com.example.todoapi.dto.TodoResponse;
 import com.example.todoapi.service.TodoService;
 import jakarta.validation.Valid;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +23,10 @@ public class TodoController {
     }
 
     @GetMapping
-    public List<TodoResponse> getAll() {
-        return todoService.getAllTodos();
+    public Page<TodoResponse> getAll(
+            @RequestParam(required = false) Boolean completed,
+            Pageable pageable) {
+        return todoService.getAllTodos(completed, pageable);
     }
 
     @GetMapping("/{id}") //Placeholder for id

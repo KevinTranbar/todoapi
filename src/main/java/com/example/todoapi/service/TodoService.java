@@ -5,6 +5,8 @@ import com.example.todoapi.exception.TodoNotFoundException;
 import com.example.todoapi.model.Todo;
 import com.example.todoapi.dto.TodoResponse;
 import com.example.todoapi.repository.TodoRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,10 +30,16 @@ public class TodoService {
         );
     }
 
-    public List<TodoResponse> getAllTodos() {
-        return todoRepository.findAll().stream()
-                .map(todo -> toResponse(todo))
-                .toList();
+    public Page<TodoResponse> getAllTodos(Boolean completed, Pageable pageable) {
+        Page<Todo> todos;
+
+        if (completed != null) {
+            todos = todoRepository.findByCompleted(completed, pageable);
+        } else {
+            todos = todoRepository.findAll(pageable);
+        }
+
+        return todos.map(todo -> toResponse(todo));
     }
 
     public TodoResponse getTodoById(Long id) {
