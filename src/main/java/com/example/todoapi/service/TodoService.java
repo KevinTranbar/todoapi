@@ -17,6 +17,10 @@ public class TodoService {
     private final TodoRepository todoRepository;
 
     public TodoService(TodoRepository todoRepository) {
+        // Constructor injection: TodoService needs a TodoRepository to function.
+        // At startup, Spring resolves dependencies bottom-up = creates TodoRepository
+        // first, then any of ITS dependencies, and so on until reaching a constructor
+        // with no bean dependencies. Basically = Create arg object first
         this.todoRepository = todoRepository;
     }
 

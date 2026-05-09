@@ -14,7 +14,7 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
-@RestControllerAdvice
+@RestControllerAdvice //If any controller throws exception, look here for handler
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(TodoNotFoundException.class)

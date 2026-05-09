@@ -24,7 +24,7 @@ public class TodoController {
 
     @GetMapping
     public Page<TodoResponse> getAll(
-            @RequestParam(required = false) Boolean completed,
+            @RequestParam(required = false) Boolean completed, //RequestParam = Extracts URL parameters, required = false = URL param optional
             Pageable pageable) {
         return todoService.getAllTodos(completed, pageable);
     }
@@ -41,7 +41,7 @@ public class TodoController {
     }
 
     @PutMapping("/{id}")
-    public TodoResponse update(@PathVariable Long id, @Valid @RequestBody TodoRequest request) {
+    public TodoResponse update(@PathVariable Long id, @Valid @RequestBody TodoRequest request) { //RequestBody = converts the JSON in the request body into a Java object (DTO)
         return todoService.updateTodo(id, request);
     }
 
