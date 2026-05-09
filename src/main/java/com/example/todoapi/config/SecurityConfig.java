@@ -4,12 +4,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
+@EnableWebSecurity
 public class SecurityConfig {
 
     @Bean //Ex: @Service creates bean out of class, @bean creates bean out of output of method //Use when want Spring to handle class you didn't write yourself but want Spring managed
@@ -17,7 +19,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder(); //Spring handles this now
     }
 
-    @Bean
+    @Bean //SecurityFilterChain is basically custom security instructions for Spring to follow at startup
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception { //Throws exception because some configurations throw exception
         //Filters Spring security applies to all incoming req
         //HttpSecurity http = Builder object that builds filter chain
