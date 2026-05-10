@@ -9,5 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface TodoRepository extends JpaRepository<Todo, Long> { //Interface because spring generates implementation (class) itself at start, only define what repo handles and the type of PK
 
-    Page<Todo> findByCompleted(boolean completed, Pageable pageable);
+    Page<Todo> findByCompleted(boolean completed, Pageable pageable); //Method name parsing: findBy + column name (SQL: SELECT * FROM todos WHERE completed = ?)
 }
