@@ -19,8 +19,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(TodoNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleTodoNotFound(
-            TodoNotFoundException ex,
-            HttpServletRequest request) {
+            TodoNotFoundException ex, //The exception
+            HttpServletRequest request) { //Everything about the request (getRequestURI = ex: "/api/todos/5"
 
         ErrorResponse error = new ErrorResponse(
                 HttpStatus.NOT_FOUND.value(),
@@ -53,7 +53,7 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(error);
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler(MethodArgumentNotValidException.class) //MethodArgumentNotValidException = Thrown when @Valid validation fails on req dto
     public ResponseEntity<Map<String, Object>> handleValidationErrors(
             MethodArgumentNotValidException ex,
             HttpServletRequest request) {
@@ -71,5 +71,37 @@ public class GlobalExceptionHandler {
         response.put("errors", fieldErrors);
 
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(response);
+    }
+
+    @ExceptionHandler(UsernameAlreadyTakenException.class)
+    public ResponseEntity<ErrorResponse> handleUsernameTaken(
+            UsernameAlreadyTakenException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.CONFLICT.value(),
+                "Conflict",
+                ex.getMessage(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(error);
+    }
+
+    @ExceptionHandler(InvalidCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleInvalidCredentials(
+            InvalidCredentialsException ex,
+            HttpServletRequest request) {
+
+        ErrorResponse error = new ErrorResponse(
+                HttpStatus.UNAUTHORIZED.value(),
+                "Unauthorized",
+                ex.getMessage(),
+                LocalDateTime.now(),
+                request.getRequestURI()
+        );
+
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(error);
     }
 }

@@ -10,10 +10,6 @@ public class ErrorResponse {
     private LocalDateTime timestamp;
     private String path;
 
-    public ErrorResponse() {
-
-    }
-
     public ErrorResponse(int status, String error, String message, LocalDateTime timestamp, String path) {
         this.status = status;
         this.error = error;

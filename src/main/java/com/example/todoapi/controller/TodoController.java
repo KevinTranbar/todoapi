@@ -35,7 +35,7 @@ public class TodoController {
     }
 
     @PostMapping
-    public ResponseEntity<TodoResponse> create(@Valid @RequestBody TodoRequest request) { //Take req body(JSON) and convert it into TodoRequest object (DTO)
+    public ResponseEntity<TodoResponse> create(@Valid @RequestBody TodoRequest request) { //Take req body(JSON) and convert it into TodoRequest object (DTO) //Valid triggers validation checks (dto annotations)
         TodoResponse created = todoService.createTodo(request); //Create Todo with converted req body
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
