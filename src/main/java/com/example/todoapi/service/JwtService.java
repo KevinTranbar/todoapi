@@ -54,3 +54,20 @@ public class JwtService { //Handles JWT logic: Generate, validate, extract usern
                 .getPayload(); //If valid, return payload
     }
 }
+/*
+* JWT guide
+* JWT token = Header + Payload + Signature
+* Header = Metadata about JWT (type, alg, etc)
+* Payload = Data about JWT (who, when, etc)
+* Signature = Computed Header + Payload with secret key to create a unique signature
+*
+* Flow:
+* 1. Client sends username and password to /auth via login or register
+* 2. Server hashes password and saves user in DB for registration
+* 3. Server looks up user in DB and compares password with hashed password in DB for login
+* 4. Server builds header with metadata such as algorithm used and type of token (JWT)
+* 5. Server builds payload with username and expiration date
+* 6. Server signs the filled JWT token with secret key which gets combined with header and payload to create the JWT token which gets sent back to client
+* 7. With the token, the client sends it back to the server at each request which gets validated by the server --> Client gets requested resource
+* */
+
