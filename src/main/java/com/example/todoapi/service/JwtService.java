@@ -69,5 +69,8 @@ public class JwtService { //Handles JWT logic: Generate, validate, extract usern
 * 5. Server builds payload with username and expiration date
 * 6. Server signs the filled JWT token with secret key which gets combined with header and payload to create the JWT token which gets sent back to client
 * 7. With the token, the client sends it back to the server at each request which gets validated by the server --> Client gets requested resource
+* - Token is stored in Authorization header in HTTP request when client makes subsequent requests
+*
+* - Token effectively useless without JwtAuthFilter, otherwise server never reads token in authorization header in req --> Client automatically unauthorized despite token
 * */
 

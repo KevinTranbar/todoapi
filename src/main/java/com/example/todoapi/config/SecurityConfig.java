@@ -1,5 +1,6 @@
 package com.example.todoapi.config;
 
+import com.example.todoapi.filter.JwtAuthFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -12,10 +13,17 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    private final JwtAuthFilter jwtAuthFilter;
+
+    public SecurityConfig(JwtAuthFilter jwtAuthFilter) {
+        this.jwtAuthFilter = jwtAuthFilter;
+    }
 
     @Bean //Ex: @Service creates bean out of class, @bean creates bean out of output of method //Use when want Spring to handle class you didn't write yourself but want Spring managed
     public PasswordEncoder passwordEncoder() {
@@ -36,12 +44,15 @@ public class SecurityConfig {
                 .exceptionHandling(ex -> ex //Says what to do when reqs are rejected
                         .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)) //What to do with unauth reqs, send 401
                 )
-                .authorizeHttpRequests(auth -> auth //Defines authorization rules, **auth** is a builder for adding rules, like http
+                .authorizeHttpRequests(auth -> auth //Defines authorization rules, **auth** is a builder for adding rules, like http //**Defines the rules which gets applied to the actual Authorization filter that Spring creates from your configs**
                         .requestMatchers("/api/auth/**").permitAll() //Auth endpoints are public, all starting with /api/auth/ is allowed (for login / register)
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll() //"For any URL, if Http method=Options, allow without auth", OPTIONS = Http method for CORS preflight requests, preflight = permission check before real req, preflight sent for some requests (non-simple req)
                         .anyRequest().authenticated() //Everything else must be authenticated aka must have valid JWT
-                );
+                )
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class); //Adds custom filter before Springs default auth filter (UsernamePasswordAuthenticationFilter (added automatically by Spring security))
+                                                                                             //(Reason: Good to run custom filter first to set security context plus some standard)
 
         return http.build(); //After config, finalize setup and return SecurityFilterChain object
     }
 }
+//Spring security active entire chain --> Filters applied in order based on your configs - specially at last filter (AuthorizationFilter) where it looks in sec context to decide if req is allowed or not
