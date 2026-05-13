@@ -1,0 +1,4 @@
+JPA = Java Persistence API
+- Hibernate most popular JPA implementation
+- Defines annotations like @Entity, @Id, @GeneratedValue, etc. And interfaces like JpaRepository
+- Rules for how objects map to tables and columns in DB

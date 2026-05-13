@@ -7,6 +7,7 @@ import com.example.todoapi.exception.InvalidCredentialsException;
 import com.example.todoapi.exception.UsernameAlreadyTakenException;
 import com.example.todoapi.model.User;
 import com.example.todoapi.repository.UserRepository;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -49,5 +50,14 @@ public class UserService {
         String token = jwtService.generateToken(request.getUsername());
 
         return new AuthResponse(token);
+    }
+
+    public User getCurrentUser() { //Only way to get the current user. JWT token effectively gone after security passes --> Only way to get user details is through security context(which carries on whole req), where userDetails is stored
+        String username = SecurityContextHolder.getContext()
+                .getAuthentication() //Stores user details
+                .getName(); //Extract username from userDetails
+
+        return userRepository.findByUsername(username) //Return user object
+                .orElseThrow(() -> new UsernameAlreadyTakenException(username));
     }
 }
