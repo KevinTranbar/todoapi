@@ -10,7 +10,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(unique = true, nullable = false, length = 50)
     private String username;
@@ -30,17 +30,17 @@ public class User {
 
     }
 
-    public User(long id, String username, String password, LocalDateTime createdAt) {
+    public User(Long id, String username, String password, LocalDateTime createdAt) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.createdAt = createdAt;
     }
 
-    public long getId() {
+    public Long getId() {
         return id;
     }
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

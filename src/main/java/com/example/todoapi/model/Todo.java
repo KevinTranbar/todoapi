@@ -24,7 +24,7 @@ public class Todo {
     @Column(name = "created_at", updatable = false)
     private LocalDateTime createdAt;
                                        //ManToOne: Looks at field type (User) --> Defines relationship (many todos, one user). When saving to DB, only save User's PK, not whole object (If not instructed otherwise)
-    @ManyToOne(fetch = FetchType.LAZY) //FetchType.LAZY = Only load full user from DB when getUser() called
+    @ManyToOne(fetch = FetchType.LAZY) //FetchType.LAZY = Only load full user from DB when getUser() called, otherwise would load full user every time todo loaded
     @JoinColumn(name = "user_id", nullable = false) //JoinColumn = Used for relationships, Column = Used for simple values (Basically just creates a columns that has a relation)
     private User user; //Stores the actual full user object
 
