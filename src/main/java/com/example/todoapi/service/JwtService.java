@@ -14,11 +14,11 @@ import java.util.Date;
 public class JwtService { //Handles JWT logic: Generate, validate, extract username
 
     private final SecretKey secretKey;
-    private final long expiration;
+    private final Long expiration;
 
     public JwtService(
             @Value("${jwt.secret}") String secret, //jwt.secret injected from application.properties into String secret here (Value injection, like bean injection)
-            @Value("${jwt.expiration}") long expiration) {
+            @Value("${jwt.expiration}") Long expiration) {
                 this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); //Convert String secret into byte array (Cryptographic algo works with byte arrays) using UTF-8 encoding. Wrap in Keys.hmacShaKeyFor() to create a SecretKey
                 this.expiration = expiration;
     }
@@ -26,8 +26,8 @@ public class JwtService { //Handles JWT logic: Generate, validate, extract usern
     public String generateToken(String username) {
         return Jwts.builder()
                 .subject(username) //Who token for
-                .issuedAt(new Date()) //When token was issued
-                .expiration(new Date(System.currentTimeMillis() + expiration)) //When token expires
+                .issuedAt(new Date()) //When token was issued //Uses Date because jjwt built around it, otherwise use Instant, although will use Date for refresh token as well for consistency
+                .expiration(new Date(System.currentTimeMillis() + expiration)) //When token expires in milliseconds
                 .signWith(secretKey) //Sign with secretKey
                 .compact(); //Build final JWT string
     }
