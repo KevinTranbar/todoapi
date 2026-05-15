@@ -49,9 +49,9 @@ public class JwtAuthFilter extends OncePerRequestFilter { //OncePerRequestFilter
         final String username = jwtService.extractUsername(token);
 
         if (username != null && SecurityContextHolder.getContext().getAuthentication() == null) { //If username successfully extracted and no existing authentication (Don't want to overwrite existing authentication)
-            UserDetails userDetails = userDetailsService.loadUserByUsername(username); //Gets user from DB in Spring security format
+            UserDetails userDetails = userDetailsService.loadUserByUsername(username); //Gets user from DB in Spring security format (Spring sec can read, but not see)
 
-            UsernamePasswordAuthenticationToken authToken = //Creates authentication object to store in SecurityContext so that Spring security can use it
+            UsernamePasswordAuthenticationToken authToken = //Creates authentication object to store in SecurityContext so that Spring security can use it (Spring can read and see)
                     new UsernamePasswordAuthenticationToken(
                             userDetails, //Details of user
                             null, //Normally password or other credentials, but JWT signature already proved user genuine //null = Already verified, no credentials needed
