@@ -14,11 +14,11 @@ import java.util.Date;
 public class JwtService { //Handles JWT logic: Generate, validate, extract username
 
     private final SecretKey secretKey;
-    private final Long expiration;
+    private final long expiration;
 
     public JwtService(
             @Value("${jwt.secret}") String secret, //jwt.secret injected from application.properties into String secret here (Value injection, like bean injection)
-            @Value("${jwt.expiration}") Long expiration) {
+            @Value("${jwt.expiration}") long expiration) {
                 this.secretKey = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8)); //Convert String secret into byte array (Cryptographic algo works with byte arrays) using UTF-8 encoding. Wrap in Keys.hmacShaKeyFor() to create a SecretKey
                 this.expiration = expiration;
     }

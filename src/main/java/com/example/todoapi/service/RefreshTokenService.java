@@ -4,7 +4,7 @@ import com.example.todoapi.exception.InvalidCredentialsException;
 import com.example.todoapi.model.RefreshToken;
 import com.example.todoapi.model.User;
 import com.example.todoapi.repository.RefreshTokenRepository;
-import jakarta.transaction.Transactional;
+import org.springframework.transaction.annotation.Transactional; //Use when method has more than one operation to same DB (All or nothing)
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -15,10 +15,10 @@ import java.util.UUID;
 public class RefreshTokenService {
 
     private final RefreshTokenRepository refreshTokenRepository;
-    private Long refreshExpiration;
+    private final long refreshExpiration;
 
     public RefreshTokenService(RefreshTokenRepository refreshTokenRepository,
-                               @Value("${jwt.refresh.expiration}") Long refreshExpiration) {
+                               @Value("${jwt.refresh-expiration}") long refreshExpiration) {
         this.refreshTokenRepository = refreshTokenRepository;
         this.refreshExpiration = refreshExpiration;
     }
@@ -33,8 +33,8 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(refreshToken);
     }
 
-    public RefreshToken validateRefreshToken(String token) {
-        RefreshToken refreshToken = refreshTokenRepository.findByToken(token)
+    public RefreshToken validateRefreshToken(String token) { //Takes in token part from refreshToken entity
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(token) //Finds full refreshToken entity from DB with token part
                 .orElseThrow(() -> new InvalidCredentialsException());
 
         if (refreshToken.isRevoked()) {
@@ -45,14 +45,14 @@ public class RefreshTokenService {
             throw new InvalidCredentialsException();
         }
 
-        return refreshToken;
+        return refreshToken; //Takes in only token part of entity, returns full entity based on token part
     }
     //Used when access token expires
     @Transactional //Ensures that old token is revoked and new token is created (Transactional = Either all or none succeeds)
-    public RefreshToken rotateRefreshToken(RefreshToken oldToken) { //Rotate refresh token for user
-        oldToken.setRevoked(true); //Mark old token as revoked
-        refreshTokenRepository.save(oldToken); //Save the revoked old token to DB, JPA realizes that oldToken Id is same as existing token in DB, UPDATE instead of INSERT
-        return createRefreshToken(oldToken.getUser()); //Give new refresh token to user with old token's user
+    public RefreshToken rotateRefreshToken(RefreshToken oldRefToken) { //Rotate refresh token for user //Takes in full refreshToken entity
+        oldRefToken.setRevoked(true); //Mark old token as revoked
+        refreshTokenRepository.save(oldRefToken); //Save the revoked old token to DB, JPA realizes that oldToken Id is same as existing token in DB, UPDATE instead of INSERT
+        return createRefreshToken(oldRefToken.getUser()); //Give new refresh token to user with old token's user
     }
     //Used on login and logout
     @Transactional //Added for convention, and safety

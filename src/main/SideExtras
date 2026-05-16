@@ -2,3 +2,21 @@ JPA = Java Persistence API
 - Hibernate most popular JPA implementation
 - Defines annotations like @Entity, @Id, @GeneratedValue, etc. And interfaces like JpaRepository
 - Rules for how objects map to tables and columns in DB
+
+AccessToken / RefreshToken flow:
+- Register / Login
+- Gets: accessToken (15min) + refreshToken (7 days)
+- Every request --> Send accessToken in Authorization header
+- After 15min --> accessToken expires
+- Next request --> 401 error
+- Frontend intercepts 401 error --> Sends refreshToken to /api/auth/refresh
+- Server validates refreshToken --> Rotates it:
+ - Old refreshToken revoked in DB
+ - New refreshToken created in DB
+ - New accessToken created
+ - New refreshToken and new accessToken sent back
+
+ - Frontend receives: New accessToken + new refreshToken
+ - Frontend retries original request with new accessToken
+ - Back to normal --> Repeat cycle every 15min
+ - After refreshToken expires --> Rejected --> Force logout --> Must login again

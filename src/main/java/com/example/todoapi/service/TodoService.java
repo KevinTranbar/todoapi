@@ -102,6 +102,6 @@ public class TodoService {
             throw new TodoNotFoundException(id);
         }
 
-        todoRepository.deleteById(id);
+        todoRepository.delete(todo);
     }
 }
