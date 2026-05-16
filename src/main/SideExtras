@@ -16,7 +16,7 @@ AccessToken / RefreshToken flow:
  - New accessToken created
  - New refreshToken and new accessToken sent back
 
- - Frontend receives: New accessToken + new refreshToken
- - Frontend retries original request with new accessToken
- - Back to normal --> Repeat cycle every 15min
- - After refreshToken expires --> Rejected --> Force logout --> Must login again
+- Frontend receives: New accessToken + new refreshToken
+- Frontend retries original request with new accessToken
+- Back to normal --> Repeat cycle every 15min
+- After refreshToken expires --> Rejected --> Force logout --> Must login again
