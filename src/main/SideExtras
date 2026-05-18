@@ -20,3 +20,43 @@ AccessToken / RefreshToken flow:
 - Frontend retries original request with new accessToken
 - Back to normal --> Repeat cycle every 15min
 - After refreshToken expires --> Rejected --> Force logout --> Must login again
+
+Frontend + Backend (RefreshToken flow)
+im gonna try to summarise the whole refreshToken part. So the problem.
+The problem was that when the accessToken expired the user was forced to login again, mere inconvenience.
+The other problem was the security. Either you had to have accessTokens that lasted way to long posing a security danger if that token got stolen,
+meaning that the attacker would have access longer. On the other hand, if the accessToken was to short, it would be an inconvenience for users being forced to login constantly.
+Solution, separate the auth into 2 parts. A refreshToken and a accessToken. The refreshToken will act as a validator, it doesnt give authorization,
+but rather approved the user for a accessToken. So the refreshToken allowed the user to continually get more accessTokens automatically.
+This meant that accessTokens could be shorter, mitigating the security risk by a lot, while the refreshToken could hold longer,
+essentially removing the security risk and inconvenience. So, what did we to in the backend? We modified so that we send out 2 tokens,
+the accessToken and refreshToken on login or register. We created a table for storing RefreshTokens. But why store them?
+when we dont store accessTokens. We want to store refreshToken because we need a way to revoke them as they are so long lasting.
+Without having them server-side someone could get a refreshToken and use it as they please to get more accessTokens until expire.
+Further created logic for the refreshToken, means to revoke and remove them from DB. For the frontend, we updated the fetch methods,
+types and context to hold refreshToken in local storage. For the big part: the queue. We don't want users to need to login after accessToken goes out,
+we want to send a refreshRequest automatically, otherwise the entire purpose of the refreshTokens would be redundant, it needs to happen automatically.
+To do this we wrap every apiFetch call in a checker, that looks for 401 error which means that accessToken has gone out. When a apiFetch gets a 401,
+we automatically send a refreshRequest to the backend with the refreshToken in localStorage. If the refresh does exist but is also invalid,
+then the refresh process will reject and force user to login again for a new refreshToken. It all makes sense right?
+We see a 401 so we send a req for a refresh meaning a new refreshToken but also a new accessToken. The old refreshToken gets revoked,
+while we get a new one. This is to better track and monitor attackers. If a attacker gets hold of a users refreshToken and uses it for a new accessToken,
+the user will get a error when their accessToken expieres because their refreshToken is now revoked. This makes us able to track the attackers and serves as an alarm for both the user and developers.
+Also prevents users from easily using stolen refreshTokens as they might be revoked.
+Further all refreshTokens are cleared when login or logout to prevent attackers from using old but still valid refreshToken for an extended period.
+The attacker only has between an improper logout and the next login to use the refreshToken. For the more complicated part. We also have a queue for requests.
+Imagine that several request all with invalid accessToken comes in at the same time, all 3 will start the refreshProcess but only the first one will succeed because by the time the other 2 start,
+they are using a invalid refreshToken. To solve this we use a queue. We have a queue and a boolean to indicate if the refresh process is underway. If the refresh process is underway,
+the other calls are placed into a queue. More specifically, the 2 methods are stored in queue, one that represents what the call wants to do and the other which represents what to do if refresh process fails.
+These calls are in wait as promises to their caller to stall the request and. When the refresh process is done, a helper method activates which deals with all waiting requests.
+it goes through the queue and activates either the success method or the fail method for them all. The success method in this case is to perform the orginal apiReq again.
+
+TLDR:
+✅ The problem — short tokens = security risk, long tokens = inconvenience.
+✅ The solution — two tokens: short access + long refresh.
+✅ Why store refresh tokens — need server-side revocation for long-lived tokens.
+✅ Token rotation — detects stolen tokens, serves as alarm.
+✅ Clear on login/logout — minimizes attacker window.
+✅ Automatic refresh — 401 triggers refresh silently, user never notices.
+✅ The queue — prevents multiple simultaneous refresh attempts.
+✅ How the queue works — pre-saved methods, suspended promises, processQueue activates them.
