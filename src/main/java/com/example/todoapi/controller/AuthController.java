@@ -2,6 +2,7 @@ package com.example.todoapi.controller;
 
 import com.example.todoapi.dto.AuthResponse;
 import com.example.todoapi.dto.LoginRequest;
+import com.example.todoapi.dto.RefreshRequest;
 import com.example.todoapi.dto.RegisterRequest;
 import com.example.todoapi.service.UserService;
 import jakarta.validation.Valid;
@@ -23,7 +24,7 @@ public class AuthController {
     }
 
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(
+    public ResponseEntity<AuthResponse> register( //ResponseEntity = Full HTTP response, HttpStatus = HTTP status code (200, 400, etc.)
             @Valid @RequestBody RegisterRequest request) {
         return ResponseEntity.status(HttpStatus.CREATED).body(userService.register(request));
     }
@@ -32,5 +33,18 @@ public class AuthController {
     public ResponseEntity<AuthResponse> login(
             @Valid @RequestBody LoginRequest request) {
         return ResponseEntity.ok(userService.login(request)); //.ok = 200 request successful
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthResponse> refresh(
+            @Valid @RequestBody RefreshRequest request) {
+        return ResponseEntity.ok(userService.refresh(request.getRefreshToken())); //Need token to validate, then revoke old and create new
+    }
+
+    @PostMapping("/logout")
+    public ResponseEntity<Void> logout(
+            @Valid @RequestBody RefreshRequest request) {
+        userService.logout(request.getRefreshToken()); //Need token to ensure real Refresh token
+        return ResponseEntity.noContent().build(); //Builds empty response (204)
     }
 }
