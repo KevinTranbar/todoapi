@@ -22,7 +22,6 @@ AccessToken / RefreshToken flow:
 - After refreshToken expires --> Rejected --> Force logout --> Must login again
 
 Frontend + Backend (RefreshToken flow)
-im gonna try to summarise the whole refreshToken part. So the problem.
 The problem was that when the accessToken expired the user was forced to login again, mere inconvenience.
 The other problem was the security. Either you had to have accessTokens that lasted way to long posing a security danger if that token got stolen,
 meaning that the attacker would have access longer. On the other hand, if the accessToken was to short, it would be an inconvenience for users being forced to login constantly.
