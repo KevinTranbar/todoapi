@@ -40,7 +40,7 @@ we automatically send a refreshRequest to the backend with the refreshToken in l
 then the refresh process will reject and force user to login again for a new refreshToken. It all makes sense right?
 We see a 401 so we send a req for a refresh meaning a new refreshToken but also a new accessToken. The old refreshToken gets revoked,
 while we get a new one. This is to better track and monitor attackers. If a attacker gets hold of a users refreshToken and uses it for a new accessToken,
-the user will get a error when their accessToken expieres because their refreshToken is now revoked. This makes us able to track the attackers and serves as an alarm for both the user and developers.
+the user will get a error when their accessToken expires because their refreshToken is now revoked. This makes us able to track the attackers and serves as an alarm for both the user and developers.
 Also prevents users from easily using stolen refreshTokens as they might be revoked.
 Further all refreshTokens are cleared when login or logout to prevent attackers from using old but still valid refreshToken for an extended period.
 The attacker only has between an improper logout and the next login to use the refreshToken. For the more complicated part. We also have a queue for requests.
