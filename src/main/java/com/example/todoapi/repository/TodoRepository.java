@@ -19,7 +19,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> { //Interface 
 //Why interface?
 //2 reasons:
 //1. JpaRepository contains methods that we need, but just the blueprints
-//2. Our custom methods rely on spring handling them as we use, for example, method name parsing which isn't actual code
+//2. Our custom methods rely on spring handling them as we use, for example, method name parsing which isn't actual code, spring reads it and understands what code to write to match
 
 //So how does it work?
 //JpaRepository is an interface, meaning that it doesn't contain any implementation code
