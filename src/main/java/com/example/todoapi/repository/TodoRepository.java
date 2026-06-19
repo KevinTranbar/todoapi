@@ -30,4 +30,4 @@ public interface TodoRepository extends JpaRepository<Todo, Long> { //Interface 
 //**We define what spring should do through the interface, using things like name parsing which tells spring specifically what to generate out of the interface**
 
 //Repositories can be written as classes, meaning that developer writes all the code for the methods directly inside, both custom and basic crud
-//The reason we use interface and spring to do it, is because it's simply more convenient and foolproof
+//The reason we use interface and spring to do it is because it's simply more convenient and foolproof
