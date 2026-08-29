@@ -26,7 +26,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> { //Interface 
 //If it wasn't an interface, spring wouldn't generate true code from none of our custom methods or JpaRepository methods
 //Because the repos are interfaces, spring can generate the implementation for us --> It looks at Jpa methods and our custom methods as well as the name parsing for them --> Creates the actual code for all of them in class implementation
 
-//Starting the application / Compiling the code wouldn't work as name parsing is pure nonsense without spring, and Jpa methods wouldn't exist
+//Starting the application wouldn't work as name parsing is pure nonsense without spring, and Jpa methods wouldn't exist
 //**We define what spring should do through the interface, using things like name parsing which tells spring specifically what to generate out of the interface**
 
 //Repositories can be written as classes, meaning that developer writes all the code for the methods directly inside, both custom and basic crud
