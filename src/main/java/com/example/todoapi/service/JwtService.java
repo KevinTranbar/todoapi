@@ -61,6 +61,9 @@ public class JwtService { //Handles JWT logic: Generate, validate, extract usern
 * Payload = Data about JWT (who, when, etc)
 * Signature = Computed Header + Payload with secret key to create a unique signature
 *
+* Http req = Header + Optional payload
+* Inside header = JWT token = Encoded header + encoded payload + signature calculated from header + payload + secret key
+*
 * Flow:
 * 1. Client sends username and password to /auth via login or register
 * 2. Server hashes password and saves user in DB for registration
