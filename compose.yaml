@@ -1,0 +1,32 @@
+services:
+  todoapi-postgre:                      # tjänstenamnet = värdnamnet i nätverket
+    image: postgres:16                  # färdig image, ingen Dockerfile behövs
+    environment:
+      POSTGRES_USER: todoapi
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: todoapi
+    ports:
+      - "127.0.0.1:5432:5432"           # bara för DBeaver/lokal backend, inte för backend-containern
+    volumes:
+      - pgdata:/var/lib/postgresql/data # sparar datan utanför containern
+    healthcheck:                        # visar när Postgres faktiskt är redo
+      test: ["CMD-SHELL", "pg_isready -U todoapi -d todoapi"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  backend:
+    build: .                            # bygger imagen från Dockerfilen i samma mapp
+    ports:
+      - "8080:8080"                     # så att webbläsaren/Postman når backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://todoapi-postgre:5432/todoapi
+    depends_on:
+      todoapi-postgre:
+        condition: service_healthy      # starta backend först när DB:n är redo
+
+volumes:
+  pgdata:                               # deklarerar den namngivna volymen
+
+
+# HUR COMPOSE SKA BYGGA BACKEND IMAGE OCH STARTA BACKEND CONTAIENR SAMT STARTA POSTGRES CONTAINER FRÅN EXISTERANDE IMAGE

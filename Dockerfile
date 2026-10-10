@@ -21,3 +21,6 @@ EXPOSE 8080
 # Vilken port applikationen / containern lyssnar på
 ENTRYPOINT ["java", "-jar", "app.jar"]
 # Kommando för att starta applikation i container
+
+
+# HUR IMAGE AV APPLIKATION BYGGS
